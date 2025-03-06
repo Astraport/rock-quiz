@@ -138,6 +138,7 @@
             let gameStartTime = 0;
             let randomTrackIndex = 0;
             let gameTimeout = null;
+			let mp3_url = null;
             let currentDifficulty = 'easy';
 
             // Обработчик изменения сложности
@@ -282,7 +283,7 @@ function getRandomBands(correctBand, currentGenre, count) {
 			trackInfo.style.display = 'block';
 
                 albumCover.src = currentTrack.coverUrl;
-                trackInfo.textContent = `Группа: ${currentTrack.band} | Песня: ${currentTrack.songName} | Жанр: ${currentTrack.genre}`;
+                trackInfo.textContent = `Группа: ${currentTrack.band} | Песня: <a href="${currentTrack.mp3Url}">${currentTrack.songName}</a> | Жанр: ${currentTrack.genre}`;
 		albumCover.src = currentTrack.coverUrl;
 
                 scoreDisplay.textContent = `Баллы: ${score}`;
