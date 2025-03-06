@@ -214,48 +214,56 @@ function getRandomBands(correctBand, currentGenre, count) {
 }         
 			
 async function playRandomTrackPoint(url) {
-    return new Promise((resolve, reject) => {
-        const audio = new Audio();
-        
-        audio.addEventListener('error', (event) => {
-            console.error('Ошибка загрузки аудио:', event);
-            reject(event);
-        });
-        
-        audio.addEventListener('loadedmetadata', () => {
-            const duration = audio.duration;
-            const minPercent = 0.1;
-            const maxPercent = 0.5;
-            const randomPercent = minPercent + Math.random() * (maxPercent - minPercent);
-            const randomStart = Math.floor(duration * randomPercent);
-            
-            // Используем оригинальный audioPlayer как в начальном коде
-            audioPlayer.src = url;
-            audioPlayer.currentTime = randomStart;
-            audioPlayer.volume = 0.5; // Начальная громкость
-            
-            audioPlayer.play().then(() => {
-                // Fade-in анимация
-                const startTime = Date.now();
-                const fadeDuration = 2000;
-                
-                const fadeInterval = setInterval(() => {
-                    const elapsed = Date.now() - startTime;
-                    if (elapsed >= fadeDuration) {
-                        audioPlayer.volume = 1;
-                        clearInterval(fadeInterval);
-                    } else {
-                        audioPlayer.volume = 0.5 + 0.5 * (elapsed / fadeDuration);
-                    }
-                }, 50);
-                
-                gameStartTime = Date.now();
-                resolve();
-            }).catch(reject);
-        });
-        
-        audio.src = url; // Важно: метаданные грузим через временный audio
+  return new Promise((resolve, reject) => {
+    const audio = new Audio();
+    
+    // Обработчик ошибок
+    audio.addEventListener('error', (event) => {
+      console.error('Ошибка загрузки аудио:', event);
+      reject(event);
     });
+    
+    audio.addEventListener('loadedmetadata', () => {
+      const duration = audio.duration;
+      const minPercent = 0.1;
+      const maxPercent = 0.5;
+      const randomPercent = minPercent + Math.random() * (maxPercent - minPercent);
+      const randomStart = Math.floor(duration * randomPercent);
+      
+      audioPlayer.src = url;
+      audioPlayer.currentTime = randomStart;
+      
+      // Начинаем с 50% громкости
+      audioPlayer.volume = 0.5;
+      
+      audioPlayer.play();
+      
+      // Плавное увеличение громкости до 100% за 3 секунды
+      const fadeDuration = 3000; // 3 секунды в миллисекундах
+      const startVolume = 0.5;
+      const endVolume = 1.0;
+      const startTime = Date.now();
+      
+      const fadeInterval = setInterval(() => {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        
+        if (elapsedTime >= fadeDuration) {
+          audioPlayer.volume = endVolume;
+          clearInterval(fadeInterval);
+        } else {
+          // Линейная интерполяция между начальной и конечной громкостью
+          const volumeChange = (endVolume - startVolume) * (elapsedTime / fadeDuration);
+          audioPlayer.volume = startVolume + volumeChange;
+        }
+      }, 50); // Обновляем каждые 50мс для плавности
+      
+      gameStartTime = Date.now();
+      resolve();
+    });
+    
+    audio.src = url;
+  });
 }
             // Отображение кнопок групп
             function showBandButtons(correctBand, randomBands) {
