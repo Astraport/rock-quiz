@@ -283,7 +283,7 @@ function getRandomBands(correctBand, currentGenre, count) {
 			trackInfo.style.display = 'block';
 
                 albumCover.src = currentTrack.coverUrl;
-                trackInfo.innerHTML = `Группа: ${currentTrack.band} | Песня:<a href="${currentTrack.mp3Url || '#'}">${currentTrack.songName}</a> | Жанр: ${currentTrack.genre}`;
+                trackInfo.innerHTML = `Группа: ${currentTrack.band} | Песня:<a href="${currentTrack.mp3Url || '#'}" target="_blank">${currentTrack.songName}</a> | Жанр: ${currentTrack.genre}`;
 		albumCover.src = currentTrack.coverUrl;
 
                 scoreDisplay.textContent = `Баллы: ${score}`;
