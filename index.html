@@ -165,7 +165,6 @@
                 return tracks[randomTrackIndex];
             }
 
-// Улучшенная версия функции getRandomBands
 function getRandomBands(correctBand, currentGenre, count) {
     // Фильтруем треки, исключая текущую группу
     let availableTracks = tracks.filter(track => track.band !== correctBand);
@@ -182,7 +181,10 @@ function getRandomBands(correctBand, currentGenre, count) {
     // Сначала добавляем уникальные группы из того же жанра
     for (const track of sameBandGenre) {
         if (selectedBands.size >= count - 1) break;
-        selectedBands.add(track.band);
+        // Проверяем, не добавлена ли уже эта группа
+        if (!selectedBands.has(track.band)) {
+            selectedBands.add(track.band);
+        }
     }
     
     // Если не хватает групп в том же жанре, добираем из других жанров
@@ -194,8 +196,16 @@ function getRandomBands(correctBand, currentGenre, count) {
             
         for (const track of otherTracks) {
             if (selectedBands.size >= count - 1) break;
-            selectedBands.add(track.band);
+            // Проверяем, не добавлена ли уже эта группа
+            if (!selectedBands.has(track.band)) {
+                selectedBands.add(track.band);
+            }
         }
+    }
+    
+    // Проверяем, что у нас достаточно уникальных групп
+    if (selectedBands.size < count - 1) {
+        console.warn(`Не удалось найти ${count - 1} уникальных групп, найдено только ${selectedBands.size}`);
     }
     
     // Преобразуем Set обратно в массив

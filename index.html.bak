@@ -165,31 +165,45 @@
                 return tracks[randomTrackIndex];
             }
 
-// Получение случайных групп того же жанра
-            function getRandomBands(currentBand, currentGenre, count) {
-                // Создаем копию массива треков
-                let availableTracks = tracks.filter(track => track.band !== currentBand && 
-                    !bandButtonsContainer.innerText.includes(track.band));
-                
-                // Фильтруем по жанру
-                let sameBandGenre = availableTracks.filter(track => track.genre === currentGenre);
-                
-                // Если недостаточно групп в том же жанре, добираем из всех доступных
-                if (sameBandGenre.length < count - 1) {
-                    const additionalTracks = availableTracks
-                        .filter(track => !sameBandGenre.some(b => b.band === track.band))
-                        .sort(() => 0.5 - Math.random())
-                        .slice(0, count - 1 - sameBandGenre.length);
-                    
-                    sameBandGenre = sameBandGenre.concat(additionalTracks);
-                }
-                
-                // Перемешиваем и выбираем нужное количество
-                return sameBandGenre
-                    .sort(() => 0.5 - Math.random())
-                    .slice(0, count - 1)
-                    .map(track => track.band);
-            }            // Воспроизведение трека с случайной точки
+// Улучшенная версия функции getRandomBands
+function getRandomBands(correctBand, currentGenre, count) {
+    // Фильтруем треки, исключая текущую группу
+    let availableTracks = tracks.filter(track => track.band !== correctBand);
+    
+    // Создаем Set для уникальных групп
+    let selectedBands = new Set();
+    
+    // Вначале пытаемся найти группы того же жанра
+    let sameBandGenre = availableTracks.filter(track => track.genre === currentGenre);
+    
+    // Перемешиваем массив того же жанра
+    sameBandGenre = sameBandGenre.sort(() => 0.5 - Math.random());
+    
+    // Сначала добавляем уникальные группы из того же жанра
+    for (const track of sameBandGenre) {
+        if (selectedBands.size >= count - 1) break;
+        selectedBands.add(track.band);
+    }
+    
+    // Если не хватает групп в том же жанре, добираем из других жанров
+    if (selectedBands.size < count - 1) {
+        // Перемешиваем оставшиеся треки
+        let otherTracks = availableTracks
+            .filter(track => track.genre !== currentGenre)
+            .sort(() => 0.5 - Math.random());
+            
+        for (const track of otherTracks) {
+            if (selectedBands.size >= count - 1) break;
+            selectedBands.add(track.band);
+        }
+    }
+    
+    // Преобразуем Set обратно в массив
+    return Array.from(selectedBands);
+}         
+			
+			
+			// Воспроизведение трека с случайной точки
             async function playRandomTrackPoint(url) {
     return new Promise((resolve, reject) => {
         const audio = new Audio();
