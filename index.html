@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Угадай рок группу</title>
+    <title>Угадай рок-группу</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -148,7 +148,6 @@
                 });
             });
 
-            // Загрузка данных из текстового файла
             async function loadTracks() {
                 const response = await fetch('results.txt');
                 const text = await response.text();
@@ -228,7 +227,6 @@ async function playRandomTrackPoint(url) {
             const randomPercent = minPercent + Math.random() * (maxPercent - minPercent);
             const randomStart = Math.floor(duration * randomPercent);
             
-            // Используем оригинальный audioPlayer как в начальном коде
             audioPlayer.src = url;
             audioPlayer.currentTime = randomStart;
             audioPlayer.volume = 0.5; // Начальная громкость
@@ -253,10 +251,9 @@ async function playRandomTrackPoint(url) {
             }).catch(reject);
         });
         
-        audio.src = url; // Важно: метаданные грузим через временный audio
+        audio.src = url;
     });
 }
-            // Отображение кнопок групп
             function showBandButtons(correctBand, randomBands) {
                 bandButtonsContainer.innerHTML = '';
                 
@@ -272,7 +269,7 @@ async function playRandomTrackPoint(url) {
                 });
             }
 
-            // Проверка ответа
+
             function checkAnswer(isCorrect) {
                 // Очистка предыдущего таймаута
                 if (gameTimeout) {
@@ -350,8 +347,6 @@ playButton.textContent = 'Играть дальше';
                     playButton.style.display = 'block';
                 }
             });
-
-            // Инициализация
             loadTracks();
         });
     </script>
