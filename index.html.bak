@@ -232,7 +232,6 @@ async function playRandomTrackPoint(url) {
             audioPlayer.volume = 0.5; // Начальная громкость
             
             audioPlayer.play().then(() => {
-                // Fade-in анимация
                 const startTime = Date.now();
                 const fadeDuration = 2000;
                 
